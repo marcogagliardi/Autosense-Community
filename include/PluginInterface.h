@@ -131,10 +131,24 @@ public:
     }
 
     // Publishes telemetry to the MQTT broker.
-    // In the community stub, this is an empty inline implementation so plugins compile cleanly.
-    // The core AutoSense runtime provides the full network and JSON-packaging implementation.
+    // In this Community Test Harness, this prints the simulated MQTT payload to Serial.
+    // In the official firmware, the core runtime dispatches this to the real MQTT broker.
     virtual void MQTTsend(String topic, String value, String unit = "ppm", String metric = "", String sensorType = "AutosenseType", String location = "Lab 1")
     {
-        (void)topic; (void)value; (void)unit; (void)metric; (void)sensorType; (void)location;
+        Serial.print(F("  [MOCK MQTT] Topic: '"));
+        Serial.print(topic);
+        Serial.print(F("' | Value: '"));
+        Serial.print(value);
+        Serial.print(F("'"));
+        if (unit.length() > 0) {
+            Serial.print(F(" ["));
+            Serial.print(unit);
+            Serial.print(F("]"));
+        }
+        if (metric.length() > 0) {
+            Serial.print(F(" | Metric: "));
+            Serial.print(metric);
+        }
+        Serial.println();
     }
 };

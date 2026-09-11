@@ -21,6 +21,7 @@ public:
 
     void registerFactory(const std::string& id, PluginFactory factory);
     Plugin* createPlugin(const std::string& id);
+    const std::map<std::string, PluginFactory>& getFactories() const { return factories; }
 
 private:
     std::map<std::string, PluginFactory> factories;
