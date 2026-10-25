@@ -1,0 +1,18 @@
+SELECT *
+FROM Downloads
+WHERE LOWER(UserAgent) NOT LIKE '%bot%'
+  AND LOWER(UserAgent) NOT LIKE '%python%'
+  AND LOWER(UserAgent) NOT LIKE '%aiohttp%'
+  AND LOWER(UserAgent) NOT LIKE '%node-fetch%'
+  AND LOWER(UserAgent) NOT LIKE '%curl%'
+  AND LOWER(UserAgent) NOT LIKE '%wget%'
+  AND LOWER(UserAgent) NOT LIKE '%go-http%'
+  AND LOWER(UserAgent) NOT LIKE '%java%'
+  AND LOWER(UserAgent) NOT LIKE '%okhttp%'
+  AND LOWER(UserAgent) NOT LIKE '%scrapy%'
+  AND LOWER(UserAgent) NOT LIKE '%httpx%'
+  AND LOWER(UserAgent) NOT LIKE '%requests/%'
+  AND LOWER(UserAgent) NOT LIKE '%axios%'
+  AND LOWER(UserAgent) NOT LIKE '%appengine%'
+  AND LOWER(UserAgent) NOT LIKE '%headless%'
+ORDER BY DownloadedAt DESC;
