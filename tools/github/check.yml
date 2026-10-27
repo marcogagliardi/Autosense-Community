@@ -1,0 +1,48 @@
+# Runs on every push and pull request: checks each plugin against the SDK rules
+# and builds the test harness with it for ESP32 and ESP8266.
+name: Check plugins
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: SDK rules and simulation
+        run: |
+          shopt -s nullglob
+          files=(src/P*.cpp examples/*/P*.cpp)
+          for f in "${files[@]}"; do
+            python sdk/tools/check_plugin.py "$f" --static-only
+          done
+          # full simulation for plugins that need no sensor library
+          python sdk/tools/check_plugin.py examples/P006_pH/P006.cpp
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env: [esp32dev, nodemcuv2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ matrix.env }}-${{ hashFiles('platformio.ini') }}
+      - run: pip install platformio
+      - name: Build the harness with the plugins in src/ (or the pH example)
+        run: |
+          shopt -s nullglob
+          plugins=(src/P*.cpp)
+          if [ ${#plugins[@]} -eq 0 ]; then cp examples/P006_pH/P006.cpp src/; fi
+          pio run -e ${{ matrix.env }}
